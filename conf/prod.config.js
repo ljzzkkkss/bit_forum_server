@@ -1,5 +1,5 @@
 module.exports = {
-    port: 80,
+    port: 8088,
     // MySQL数据库联接配置
     mysql: {
         host: '127.0.0.1',
