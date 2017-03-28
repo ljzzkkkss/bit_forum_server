@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var CacheUtil = require('../util/cashUtil');
 
 var userDao = require('../dao/user/userDao');
 

@@ -1,10 +1,10 @@
 // 实现与MySQL交互
 var mysql = require('mysql');
-var $conf = require('../../conf/config');
-var $sql = require('./userSqlMapping');
+var config = require('../../conf/config');
+var sql = require('./userSqlMapping');
 
 // 使用连接池，提升性能
-var pool  = mysql.createPool( $conf.mysql);
+var pool  = mysql.createPool( config.mysql);
 
 // 向前台返回JSON方法的简单封装
 var jsonWrite = function (res, ret) {
@@ -25,7 +25,7 @@ module.exports = {
             var param = req.body;
             // 建立连接，向表中插入值
             // 'INSERT INTO user(id, username, age, email) VALUES(0,?,?,?)',
-            connection.query($sql.insert, [param.username, param.password, param.email], function(err, result) {
+            connection.query(sql.insert, [param.username, param.password, param.email], function(err, result) {
                 if(result) {
                     result = {
                         code: 200,
@@ -49,7 +49,7 @@ module.exports = {
 
             // 建立连接，向表中插入值
             // 'SELECT * FROM user WHERE username=?',
-            connection.query($sql.queryByUsername, [param.username], function(err, result) {
+            connection.query(sql.queryByUsername, [param.username], function(err, result) {
 
                 console.log(err);
                 // 以json形式，把操作结果返回给前台页面

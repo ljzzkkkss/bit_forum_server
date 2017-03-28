@@ -7,5 +7,10 @@ module.exports = {
         password: 'BIT@1q2w3e4r',
         database:'bit_forum',
         port: 3306
+    },
+    redis: {
+        host: '127.0.0.1',
+        password: 'LJ@1qazx4',
+        port: 2467
     }
 };
