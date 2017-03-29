@@ -3,7 +3,7 @@ var jsonUtil = {
    write:  function (res, ret) {
         if(typeof ret === 'undefined') {
             res.json({
-                code:'1',
+                success: false,
                 msg: '操作失败'
             });
         } else {
