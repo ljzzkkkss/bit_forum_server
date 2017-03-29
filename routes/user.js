@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var cacheUtil = require('../util/cashUtil');
+var cacheUtil = require('../util/cacheUtil');
 var jsonUtil =  require('../util/jsonUtil');
 var util = require('../util/util');
 

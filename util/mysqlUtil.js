@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var config = require('../../conf/config');
+var config = require('../conf/config');
 
 var pool = undefined;
 
