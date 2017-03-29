@@ -67,6 +67,7 @@ router.post('/logout', function(req, res, next) {
   return {
     success: true
   };
+  jsonUtil.write(res,result);
 });
 
 
