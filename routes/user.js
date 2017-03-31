@@ -9,37 +9,41 @@ var userDao = require('../dao/user/userDao');
 router.post('/register', function(req, res, next) {
   // 获取前台页面传过来的参数
   var param = req.body;
-  var result = userDao.add(param);
-  jsonUtil.write(res,result);
+  var register = function(result){
+    jsonUtil.write(res,result);
+  };
+  userDao.add(param, register);
 });
 
 router.post('/login', function(req, res, next) {
   // 获取前台页面传过来的参数
   var param = req.body;
-  var result = userDao.queryByUsername(param);
-  if(result.length > 0 && result[0].password == param.password){
-    var sessionid = util.md5(util.md5(util.randomnumber(8)));
-    var token = util.md5(util.md5(util.randomnumber(8)));
-    cacheUtil.set(param.username + '_sessonid', sessionid);
-    cacheUtil.set(param.username + '_token', token);
-    if(param.rememberme) {
-      cacheUtil.expire(param.username + '_sessonid', 3600 * 24 * 7);
+  var login = function (result) {
+    if(result.length > 0 && result[0].password == param.password){
+      var sessionid = util.md5(util.md5(util.randomnumber(8)));
+      var token = util.md5(util.md5(util.randomnumber(8)));
+      cacheUtil.set(param.username + '_sessonid', sessionid);
+      cacheUtil.set(param.username + '_token', token);
+      if(param.rememberme) {
+        cacheUtil.expire(param.username + '_sessonid', 3600 * 24 * 7);
+      }else{
+        cacheUtil.expire(param.username + '_sessonid', 300);
+      }
+      var results = {
+        success: true,
+        token: token,
+        sessonid: sessionid
+      }
     }else{
-      cacheUtil.expire(param.username + '_sessonid', 300);
+      cacheUtil.del(param.username + '_sessonid');
+      cacheUtil.del(param.username + '_token');
+      results = {
+        success: false
+      }
     }
-    result = {
-      success: true,
-      token: token,
-      sessonid: sessionid
-    }
-  }else{
-    cacheUtil.del(param.username + '_sessonid');
-    cacheUtil.del(param.username + '_token');
-    result = {
-      success: false
-    }
-  }
-  jsonUtil.write(res,result);
+    jsonUtil.write(res,results);
+  };
+  userDao.queryByUsername(param,login);
 });
 
 router.post('/checkLogin', function(req, res, next) {
@@ -64,7 +68,7 @@ router.post('/logout', function(req, res, next) {
   var param = req.body;
   cacheUtil.del(param.username + '_sessonid');
   cacheUtil.del(param.username + '_token');
-  return {
+  var result = {
     success: true
   };
   jsonUtil.write(res,result);
