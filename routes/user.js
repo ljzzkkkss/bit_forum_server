@@ -65,10 +65,7 @@ router.post('/checkLogin', function(req, res, next) {
 
           var token = util.md5(util.md5(util.randomnumber(8)));
           cacheUtil.set(param.username + '_token', token);
-
-          if(param.rememberme) {
-            cacheUtil.expire(param.username + '_sessonid', 3600 * 24 * 7);
-          }else{
+          if(!param.rememberme) {
             cacheUtil.expire(param.username + '_sessonid', 300);
           }
 
