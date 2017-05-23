@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var cacheUtil = require('../util/cacheUtil');
 var jsonUtil =  require('../util/jsonUtil');
+var mailUtil =  require('../util/mailUtil');
 var util = require('../util/util');
 
 var userDao = require('../dao/user/userDao');
@@ -106,6 +107,16 @@ router.post('/queryByUsername', function(req, res, next) {
     jsonUtil.write(res,result);
   };
   userDao.queryByUsername(param,queryByUserName);
+});
+
+router.post('/findpassword', function(req, res, next) {
+    var param = req.body;
+    var queryByUserName = function (result) {
+        if(result.length > 0){
+            mailUtil.send(result[0].email,"test","test");
+        }
+    };
+    userDao.queryByUsername(param,queryByUserName);
 });
 
 
