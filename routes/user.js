@@ -112,13 +112,16 @@ router.post('/queryByUsername', function(req, res, next) {
 router.post('/findpassword', function(req, res, next) {
     var param = req.body;
     var queryByUserName = function (result) {
+      var success = false;
         if(result.length > 0){
-            mailUtil.send(result[0].email,"test","test");
+            mailUtil.send(result[0].email,"密码找回"," ");
+            success = true;
         }
+        jsonUtil.write(res,{
+          success:success
+        });
     };
     userDao.queryByUsername(param,queryByUserName);
 });
-
-
 
 module.exports = router;
