@@ -12,5 +12,6 @@ module.exports = {
         host: '127.0.0.1',
         password: 'LJ@1qazx4',
         port: 2467
-    }
+    },
+    url:'www.bitstudio.org.cn'
 };

@@ -12,5 +12,6 @@ module.exports = {
         host: '127.0.0.1',
         password: '1q2w3e4r',
         port: 6379
-    }
+    },
+    url:'http://localhost:8080'
 };

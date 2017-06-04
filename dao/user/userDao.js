@@ -37,5 +37,17 @@ module.exports = {
                 connection.release();
             });
         });
+    },
+    resetpass: function (param,fn) {
+        mysqlUtil.getPool().getConnection(function(err, connection) {
+            // 建立连接，修改表对应记录
+            // 'UPDATE user SET password=? WHERE username=?',
+            connection.query(sql.resetpass, [param.password, param.username], function(err) {
+                console.log(err);
+
+                // 释放连接
+                connection.release();
+            });
+        });
     }
 };

@@ -4,6 +4,7 @@ var cacheUtil = require('../util/cacheUtil');
 var jsonUtil =  require('../util/jsonUtil');
 var mailUtil =  require('../util/mailUtil');
 var util = require('../util/util');
+var config = require('../conf/config');
 
 var userDao = require('../dao/user/userDao');
 
@@ -109,19 +110,74 @@ router.post('/queryByUsername', function(req, res, next) {
   userDao.queryByUsername(param,queryByUserName);
 });
 
+//找回密码发送邮件
 router.post('/findpassword', function(req, res, next) {
     var param = req.body;
-    var queryByUserName = function (result) {
+    var findpassword = function (result) {
       var success = false;
         if(result.length > 0){
-            mailUtil.send(result[0].email,"密码找回"," ");
+            var token = util.md5(result[0].username + util.randomnumber(8));
+            mailUtil.send(result[0].email,"密码找回","找回密码链接半小时之内有效，请点击：" + config.url + "/resetpass/" + token + "，如非本人操作请注意保护账号安全。");
+            cacheUtil.set(token, result[0].username);
+            cacheUtil.expire(token, 1800);
             success = true;
         }
         jsonUtil.write(res,{
           success:success
         });
     };
-    userDao.queryByUsername(param,queryByUserName);
+    userDao.queryByUsername(param,findpassword);
+});
+
+//找回密码验证链接token并返回下次请求用的token
+router.post('/checkresetpass', function(req, res, next) {
+    var param = req.body;
+    cacheUtil.get(param.token,function(err, response){
+        var result;
+        console.log('checkresetpass-token-err',err);
+        console.log('checkresetpass-token-response',response);
+
+        if(response != null){
+            cacheUtil.del(param.token);
+            var token = util.md5(util.md5(util.randomnumber(8)));
+            cacheUtil.set(response + '_token', token);
+            result = {
+                success:true,
+                username:response,
+                token:token
+            };
+            jsonUtil.write(res,result);
+        }else{
+            result = {
+                success:false
+            };
+            jsonUtil.write(res,result);
+        }
+    });
+});
+
+//重新设置密码
+router.post('/resetpass', function(req, res, next) {
+    var param = req.body;
+    cacheUtil.get(param.username + '_token',function(err, response){
+        var result;
+        console.log('resetpass-token-err',err);
+        console.log('resetpass-token-response',response);
+
+        if(response != null && response == param.token){
+            cacheUtil.del(param.username + '_token')
+            userDao.resetpass(param)
+            result = {
+                success:true
+            };
+            jsonUtil.write(res,result);
+        }else{
+            result = {
+                success:false
+            };
+            jsonUtil.write(res,result);
+        }
+    });
 });
 
 module.exports = router;
