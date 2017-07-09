@@ -10,7 +10,7 @@ module.exports = {
     },
     redis: {
         host: '127.0.0.1',
-        password: '1q2w3e4r',
+        password: '',
         port: 6379
     },
     url:'http://localhost:8080'

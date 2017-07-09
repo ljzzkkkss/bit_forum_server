@@ -7,8 +7,17 @@ var cacheUtil = {
     key:  function (k,fn) {
         redisClient.keys(k, fn);
     },
-    get: function (k, fn) {
-        redisClient.get(k, fn);
+    get: function (k) {
+        return new Promise(function (resolve,reject){
+            redisClient.get(k, function(err,result){
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(result);
+                }
+            });
+        })
+
     },
     set: function (k, v, fn){
         redisClient.set(k, v, fn);
