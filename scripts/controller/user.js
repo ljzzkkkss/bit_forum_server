@@ -4,7 +4,7 @@ var cacheUtil = require('../util/cacheUtil');
 var jsonUtil =  require('../util/jsonUtil');
 var mailUtil =  require('../util/mailUtil');
 var util = require('../util/util');
-var config = require('../conf/config');
+var config = require('../../conf/config');
 
 var userDao = require('../dao/user/userDao');
 
