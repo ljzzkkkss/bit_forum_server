@@ -12,6 +12,11 @@ router.post('/datainfo/user/register', function(req, res, next) {
   // 获取前台页面传过来的参数
   var param = req.body;
   userDao.add(param).then(function(result){
+      if(result) {
+          result = {
+              success:true
+          };
+      }
       jsonUtil.write(res,result);
   });
 });
